@@ -1,32 +1,27 @@
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-	entry: __dirname + '/component/mount.js',
+	entry: [
+		'webpack-dev-server/client?http://localhost:3000',
+		'webpack/hot/only-dev-server',
+		__dirname + '/app/mount'
+	],
 	output: {
 		path: __dirname + '/dist',
-		filename: 'bundle.js'
+		filename: 'bundle.js',
+		publicPath: '/dist/'
 	},
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin(),
-		new HtmlWebpackPlugin({
-			template: __dirname + '/component/index.html',
-			path: __dirname + '/component',
-			filename: 'index.html'
-		})
+		new webpack.HotModuleReplacementPlugin() // Hot reloading for react components
 	],
 	module: {
 		loaders: [{
-			test: /\.js$/,
-			loader: 'babel-loader',
-			exclude: /node_modules/,
-			include: __dirname,
-			query: {
-				presets: ['es2015', 'react']
-			}
-		}, {
 			test: /\.scss$/,
 			loaders: ['style', 'css', 'sass', 'autoprefixer?browsers=last 3 versions', 'sass?outputStyle=expanded']
+		},{
+			test: /\.js$/,
+			loaders: ['react-hot', 'babel-loader?presets[]=react,presets[]=es2015'],
+			exclude: /node_modules/
 		}]
 	}
 };
